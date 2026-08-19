@@ -1,0 +1,279 @@
+.seat-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 32px;
+  padding-bottom: 120px;
+  font-family: "Inter", sans-serif;
+}
+
+.seat-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.03em;
+  margin: 24px 0 4px;
+}
+
+.seat-subtitle {
+  color: var(--text-dim);
+  margin: 0 0 40px;
+  font-size: 14px;
+}
+
+.screen-indicator {
+  max-width: 600px;
+  margin: 0 auto 48px;
+  text-align: center;
+  padding: 10px;
+  border-bottom: 3px solid rgba(212, 175, 55, 0.4);
+  border-radius: 50%;
+  color: var(--text-dim);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+}
+
+.seat-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-label {
+  width: 20px;
+  color: var(--text-dim);
+  font-size: 12px;
+  text-align: center;
+}
+
+.seat {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(242, 236, 224, 0.2);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.seat:hover {
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+.seat:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.seat-normal {
+  border-color: rgba(154, 146, 168, 0.4);
+}
+
+.seat-premium {
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.seat-recliner {
+  border-color: rgba(224, 138, 138, 0.5);
+}
+
+.seat.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #17131f;
+  font-weight: 600;
+}
+
+.seat.booked {
+  border-color: rgba(242, 236, 224, 0.1);
+  color: rgba(242, 236, 224, 0.15);
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.seat.booked:hover {
+  border-color: rgba(242, 236, 224, 0.1);
+  color: rgba(242, 236, 224, 0.15);
+}
+
+.legend-swatch.booked {
+  background: rgba(242, 236, 224, 0.08);
+  border-color: rgba(242, 236, 224, 0.15);
+}
+
+.checkout-form {
+  max-width: 400px;
+  margin: 0 auto 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-form input {
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.checkout-form input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.form-error {
+  color: #e08a8a;
+  font-size: 13px;
+  margin: 0;
+}
+
+.login-prompt {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0;
+}
+
+.login-prompt a {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-prompt a:hover {
+  text-decoration: underline;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: inline-block;
+  border: 1px solid rgba(242, 236, 224, 0.3);
+}
+
+.legend-swatch.seat-normal {
+  border-color: rgba(154, 146, 168, 0.6);
+}
+.legend-swatch.seat-premium {
+  border-color: rgba(212, 175, 55, 0.7);
+}
+.legend-swatch.seat-recliner {
+  border-color: rgba(224, 138, 138, 0.7);
+}
+.legend-swatch.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.booking-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.seat-count {
+  display: block;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.total-price {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.checkout-btn {
+  background: var(--gold);
+  color: #17131f;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.checkout-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.checkout-btn:not(:disabled):hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .seat-page {
+    padding: 20px 16px;
+    padding-bottom: 140px;
+  }
+
+  .seat-map {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .seat-row {
+    flex-shrink: 0;
+  }
+
+  .seat {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+
+  .legend {
+    gap: 12px;
+    font-size: 11px;
+  }
+
+  .booking-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .checkout-btn {
+    width: 100%;
+  }
+}

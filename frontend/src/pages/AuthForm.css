@@ -1,0 +1,94 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 24px;
+  font-family: "Inter", sans-serif;
+}
+
+.auth-form {
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-form h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.03em;
+  margin: 0;
+  color: var(--text);
+}
+
+.auth-subtitle {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+
+.auth-form input {
+  background: var(--bg);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.auth-form button {
+  background: var(--gold);
+  color: #17131f;
+  border: none;
+  padding: 13px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.auth-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auth-form button:not(:disabled):hover {
+  opacity: 0.9;
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 4px 0 0;
+}
+
+.auth-switch a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.form-error {
+  color: #e08a8a;
+  font-size: 13px;
+  margin: 0;
+}

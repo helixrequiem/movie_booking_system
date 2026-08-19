@@ -1,0 +1,221 @@
+.showtime-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 32px;
+  font-family: "Inter", sans-serif;
+}
+
+.back-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-block;
+  margin-bottom: 32px;
+}
+
+.back-link:hover {
+  color: var(--gold);
+}
+
+.movie-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+  max-width: 800px;
+}
+
+.header-poster {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.movie-header h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 40px;
+  letter-spacing: 0.03em;
+  margin: 0 0 8px;
+  line-height: 1.1;
+}
+
+.header-meta {
+  color: var(--text-dim);
+  margin: 0;
+  font-size: 14px;
+}
+
+.section-label {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.date-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 32px;
+  max-width: 900px;
+}
+
+.date-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 64px;
+  padding: 12px 10px;
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 10px;
+  color: var(--text-dim);
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.date-chip:hover {
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+.date-chip.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #17131f;
+}
+
+.date-weekday {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.date-num {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.date-month {
+  font-size: 11px;
+}
+
+.theater-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 900px;
+}
+
+.theater-block {
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+  padding-top: 20px;
+}
+
+.theater-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.theater-name-row h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.theater-city {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 640px) {
+  .showtime-page {
+    padding: 20px 16px;
+  }
+
+  .movie-header {
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .header-poster {
+    width: 70px;
+    height: 105px;
+  }
+
+  .movie-header h1 {
+    font-size: 28px;
+  }
+
+  .date-chip {
+    min-width: 54px;
+    padding: 10px 6px;
+  }
+
+  .showtime-grid {
+    gap: 10px;
+  }
+
+  .showtime-card {
+    padding: 12px 16px;
+  }
+}
+
+.showtime-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: 800px;
+}
+
+.showtime-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 10px;
+  padding: 16px 20px;
+  cursor: pointer;
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.showtime-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+
+.showtime-card:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.screen-name {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.show-time {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.show-price {
+  font-size: 13px;
+  color: var(--gold);
+}

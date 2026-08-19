@@ -1,0 +1,84 @@
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  font-family: "Inter", sans-serif;
+}
+
+.brand {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.greeting {
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.header-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.header-link:hover {
+  color: var(--text);
+}
+
+.header-link.primary {
+  background: var(--gold);
+  color: #17131f;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.header-link.primary:hover {
+  opacity: 0.9;
+  color: #17131f;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--text-dim);
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.logout-btn:hover {
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .header-right {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .greeting {
+    display: none;
+  }
+}

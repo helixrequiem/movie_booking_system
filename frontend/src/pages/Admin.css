@@ -1,0 +1,242 @@
+.admin-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 32px;
+  font-family: "Inter", sans-serif;
+}
+
+.admin-page h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.03em;
+  margin: 0 0 4px;
+}
+
+.admin-subtitle {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0 0 28px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  margin-bottom: 28px;
+  max-width: 1100px;
+  overflow-x: auto;
+}
+
+.admin-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.admin-tab:hover {
+  color: var(--text);
+}
+
+.admin-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.admin-section-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 24px;
+  max-width: 1100px;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .admin-section-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-card {
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.admin-card h2 {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  margin: 0 0 8px;
+}
+
+.admin-card input,
+.admin-card select,
+.admin-card textarea {
+  background: var(--bg);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.admin-card select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a92a8' stroke-width='2'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 32px;
+}
+
+.admin-card textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.admin-card input:focus,
+.admin-card select:focus,
+.admin-card textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.admin-row {
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.admin-card button {
+  background: var(--gold);
+  color: #17131f;
+  border: none;
+  padding: 11px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.admin-card button:hover {
+  opacity: 0.9;
+}
+
+.admin-status {
+  font-size: 12px;
+  margin: 0;
+}
+
+.admin-status.success {
+  color: #8fd19e;
+}
+
+.admin-status.error {
+  color: #e08a8a;
+}
+
+.admin-cancel-btn {
+  background: transparent !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  color: var(--text-dim) !important;
+}
+
+.admin-cancel-btn:hover {
+  border-color: var(--gold) !important;
+  color: var(--text) !important;
+}
+
+.admin-list-card {
+  min-height: 100%;
+}
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.admin-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-list-title {
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+  min-width: 100px;
+}
+
+.admin-list-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.admin-list-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.admin-list-actions button {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: var(--text-dim);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.admin-list-actions button:hover {
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+.admin-list-actions button.danger:hover {
+  border-color: #e08a8a;
+  color: #e08a8a;
+}

@@ -1,0 +1,120 @@
+.confirmation-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px;
+  font-family: "Inter", sans-serif;
+}
+
+.ticket {
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 16px;
+  padding: 36px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.confirmed-badge {
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+
+.confirmed-badge.cancelled {
+  background: rgba(224, 138, 138, 0.15);
+  color: #e08a8a;
+}
+
+.cancel-ticket-btn {
+  width: 100%;
+  margin-top: 20px;
+  background: transparent;
+  border: 1px solid rgba(224, 138, 138, 0.4);
+  color: #e08a8a;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cancel-ticket-btn:hover:not(:disabled) {
+  background: rgba(224, 138, 138, 0.1);
+}
+
+.cancel-ticket-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ticket h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.03em;
+  margin: 0 0 6px;
+}
+
+.ticket-meta {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0;
+}
+
+.ticket-divider {
+  border-top: 1px dashed rgba(212, 175, 55, 0.3);
+  margin: 24px 0;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--text-dim);
+}
+
+.ticket-row span:last-child {
+  color: var(--text);
+  text-align: right;
+}
+
+.ticket-row.mono,
+.mono {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.ticket-row.total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  font-size: 16px;
+}
+
+.ticket-row.total span:last-child {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.confirmation-page .back-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.confirmation-page .back-link:hover {
+  color: var(--gold);
+}

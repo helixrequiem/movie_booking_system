@@ -1,0 +1,162 @@
+.mybookings-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 32px;
+  font-family: "Inter", sans-serif;
+}
+
+.mybookings-page h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.03em;
+  margin: 0 0 28px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+}
+
+.browse-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.browse-link:hover {
+  text-decoration: underline;
+}
+
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 720px;
+}
+
+.booking-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.booking-item:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.booking-poster {
+  width: 56px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.booking-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-info h2 {
+  font-size: 16px;
+  margin: 0 0 4px;
+}
+
+.booking-meta {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin: 0 0 2px;
+}
+
+.booking-seats {
+  font-size: 12px;
+  color: var(--text);
+  margin: 6px 0 0;
+}
+
+.booking-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.status-pill {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.status-pill.confirmed {
+  background: rgba(143, 209, 158, 0.15);
+  color: #8fd19e;
+}
+
+.status-pill.cancelled {
+  background: rgba(224, 138, 138, 0.15);
+  color: #e08a8a;
+}
+
+.status-pill.pending {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold);
+}
+
+.booking-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.cancel-btn {
+  background: transparent;
+  border: 1px solid rgba(224, 138, 138, 0.4);
+  color: #e08a8a;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: rgba(224, 138, 138, 0.1);
+}
+
+.cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .mybookings-page {
+    padding: 20px 16px;
+  }
+
+  .booking-item {
+    flex-wrap: wrap;
+  }
+
+  .booking-side {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+}
