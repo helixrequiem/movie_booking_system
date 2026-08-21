@@ -86,7 +86,7 @@ function BookingConfirmation() {
         )}
       </div>
 
-      <Link to="/" className="back-link">
+      <Link to="/movies" className="back-link">
         ← Book another movie
       </Link>
     </div>

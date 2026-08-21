@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
+import Landing from "./pages/Landing";
 import MovieList from "./pages/MovieList";
 import MovieDetail from "./pages/MovieDetail";
 import ShowtimeList from "./pages/ShowtimeList";
@@ -15,7 +16,8 @@ function App() {
     <>
       <Header />
       <Routes>
-        <Route path="/" element={<MovieList />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/movies" element={<MovieList />} />
         <Route path="/movies/:movieId" element={<MovieDetail />} />
         <Route path="/movies/:movieId/showtimes" element={<ShowtimeList />} />
         <Route path="/showtimes/:showtimeId/seats" element={<SeatPicker />} />

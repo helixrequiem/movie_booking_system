@@ -18,6 +18,9 @@ function Header() {
       </Link>
 
       <div className="header-right">
+        <Link to="/movies" className="header-link">
+          Movies
+        </Link>
         {user ? (
           <>
             {user.is_admin && (

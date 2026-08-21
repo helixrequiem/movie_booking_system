@@ -53,7 +53,7 @@ function MyBookings() {
       ) : bookings.length === 0 ? (
         <div className="empty-state">
           <p>You haven't booked anything yet.</p>
-          <Link to="/" className="browse-link">
+          <Link to="/movies" className="browse-link">
             Browse movies →
           </Link>
         </div>

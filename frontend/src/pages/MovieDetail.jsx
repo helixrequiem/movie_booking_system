@@ -33,7 +33,7 @@ function MovieDetail() {
 
   return (
     <div className="detail-page">
-      <Link to="/" className="back-link">
+      <Link to="/movies" className="back-link">
         ← All movies
       </Link>
 

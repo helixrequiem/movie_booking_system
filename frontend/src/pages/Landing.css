@@ -1,0 +1,219 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap");
+
+.landing-page {
+  min-height: 100vh;
+  background: #0e0b14;
+  color: #f2ece0;
+  font-family: "Inter", sans-serif;
+}
+
+.hero {
+  text-align: center;
+  padding: 90px 24px 60px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #d4af37;
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(48px, 8vw, 84px);
+  letter-spacing: 0.04em;
+  margin: 0 0 16px;
+  line-height: 1.15;
+  padding-top: 0.1em;
+  background: linear-gradient(180deg, #fff 0%, #d4af37 120%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-subtitle {
+  color: #9a92a8;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-cta {
+  background: #d4af37;
+  color: #17131f;
+  border: none;
+  padding: 15px 34px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.hero-cta:hover {
+  opacity: 0.9;
+}
+
+.hero-cta-secondary {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #f2ece0;
+  padding: 15px 34px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.hero-cta-secondary:hover {
+  border-color: #d4af37;
+  color: #d4af37;
+}
+
+.now-showing {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 32px;
+}
+
+.now-showing-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.now-showing-header h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.see-all-link {
+  background: none;
+  border: none;
+  color: #d4af37;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.see-all-link:hover {
+  text-decoration: underline;
+}
+
+.preview-strip {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.preview-card {
+  flex-shrink: 0;
+  width: 150px;
+  cursor: pointer;
+}
+
+.preview-poster {
+  width: 150px;
+  height: 220px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #17131f;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
+}
+
+.preview-card:hover .preview-poster {
+  transform: translateY(-4px);
+}
+
+.preview-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.preview-title {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+}
+
+.how-it-works {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 50px 32px 90px;
+  text-align: center;
+}
+
+.how-it-works h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.03em;
+  margin: 0 0 32px;
+  color: #9a92a8;
+}
+
+.steps-row {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 160px;
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 18px;
+}
+
+.step-label {
+  font-size: 13px;
+  color: #9a92a8;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 60px 20px 40px;
+  }
+
+  .now-showing,
+  .how-it-works {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .steps-row {
+    gap: 28px;
+  }
+}
