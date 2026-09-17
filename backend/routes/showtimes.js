@@ -2,20 +2,19 @@ const express = require("express");
 const router = express.Router();
 const Showtime = require("../models/showtime");
 const Seat = require("../models/seat");
-require("../models/screen"); // needed so populate("screen_id") can resolve the Screen model
-require("../models/movie"); // needed so populate("movie_id") can resolve the Movie model
-require("../models/theater"); // needed so nested populate of screen_id.theater_id can resolve
+require("../models/screen");
+require("../models/movie");
+require("../models/theater");
 const requireAuth = require("../middleware/requireAuth");
 const requireAdmin = require("../middleware/requireAdmin");
 
-// GET /api/showtimes?movie_id=...&date=YYYY-MM-DD - list showtimes, optionally filtered by movie and/or date
+// GET /api/showtimes?movie_id=&date=YYYY-MM-DD
 router.get("/", async (req, res) => {
   try {
     const filter = {};
     if (req.query.movie_id) filter.movie_id = req.query.movie_id;
 
     if (req.query.date) {
-      // Interpret the date as a full local day, from 00:00:00 to 23:59:59
       const start = new Date(`${req.query.date}T00:00:00`);
       const end = new Date(`${req.query.date}T23:59:59.999`);
       filter.start_time = { $gte: start, $lte: end };
@@ -25,7 +24,7 @@ router.get("/", async (req, res) => {
       .populate("movie_id", "title poster_url duration_mins")
       .populate({
         path: "screen_id",
-        select: "name theater_id",
+        select: "name theater_id screen_type",
         populate: { path: "theater_id", select: "name city" },
       })
       .sort({ start_time: 1 });
@@ -36,13 +35,12 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/showtimes/:id - single showtime with movie + screen details
+// GET /api/showtimes/:id
 router.get("/:id", async (req, res) => {
   try {
     const showtime = await Showtime.findById(req.params.id)
       .populate("movie_id")
       .populate("screen_id");
-
     if (!showtime) return res.status(404).json({ error: "Showtime not found" });
     res.json(showtime);
   } catch (err) {
@@ -50,8 +48,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// GET /api/showtimes/:id/seats - seat layout for this showtime's screen,
-// with seats already booked for THIS showtime marked as unavailable
+// GET /api/showtimes/:id/seats
 router.get("/:id/seats", async (req, res) => {
   try {
     const showtime = await Showtime.findById(req.params.id);
@@ -59,7 +56,6 @@ router.get("/:id/seats", async (req, res) => {
 
     const seats = await Seat.find({ screen_id: showtime.screen_id }).sort({ row: 1, number: 1 });
 
-    // Find which seats are already booked for this specific showtime
     const Booking = require("../models/booking");
     const BookingSeat = require("../models/bookingSeat");
     const bookings = await Booking.find({
@@ -82,7 +78,7 @@ router.get("/:id/seats", async (req, res) => {
   }
 });
 
-// POST /api/showtimes - create a showtime (for seeding/admin use)
+// POST /api/showtimes - create a showtime (admin use)
 router.post("/", requireAuth, requireAdmin, async (req, res) => {
   try {
     const showtime = await Showtime.create(req.body);
@@ -92,7 +88,7 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/showtimes/:id - update a showtime (admin use)
+// PUT /api/showtimes/:id
 router.put("/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
     const showtime = await Showtime.findByIdAndUpdate(req.params.id, req.body, {
@@ -106,8 +102,7 @@ router.put("/:id", requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/showtimes/:id - delete a showtime (admin use)
-// Note: existing bookings for this showtime are left as-is, not cancelled automatically.
+// DELETE /api/showtimes/:id
 router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
     const showtime = await Showtime.findByIdAndDelete(req.params.id);

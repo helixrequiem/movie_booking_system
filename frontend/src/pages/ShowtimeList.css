@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
   max-width: 800px;
 }
 
@@ -47,20 +47,12 @@
   font-size: 14px;
 }
 
-.section-label {
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-dim);
-  margin-bottom: 16px;
-}
-
 .date-strip {
   display: flex;
   gap: 10px;
   overflow-x: auto;
   padding-bottom: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   max-width: 900px;
 }
 
@@ -108,6 +100,37 @@
   font-size: 11px;
 }
 
+.type-filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.type-chip {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--text-dim);
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.type-chip:hover {
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+.type-chip.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #17131f;
+  font-weight: 600;
+}
+
 .theater-list {
   display: flex;
   flex-direction: column;
@@ -138,6 +161,62 @@
   color: var(--text-dim);
 }
 
+.showtime-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.showtime-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 10px;
+  padding: 14px 20px;
+  cursor: pointer;
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.showtime-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+
+.screen-type-label {
+  font-size: 10px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.show-time {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.show-price {
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.status-message {
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+}
+
+.status-message.error {
+  color: #e08a8a;
+}
+
 @media (max-width: 640px) {
   .showtime-page {
     padding: 20px 16px;
@@ -145,7 +224,7 @@
 
   .movie-header {
     gap: 14px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
 
   .header-poster {
@@ -165,57 +244,4 @@
   .showtime-grid {
     gap: 10px;
   }
-
-  .showtime-card {
-    padding: 12px 16px;
-  }
-}
-
-.showtime-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  max-width: 800px;
-}
-
-.showtime-card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 10px;
-  padding: 16px 20px;
-  cursor: pointer;
-  color: var(--text);
-  font-family: inherit;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.showtime-card:hover {
-  border-color: var(--gold);
-  transform: translateY(-3px);
-}
-
-.showtime-card:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
-}
-
-.screen-name {
-  font-size: 12px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.show-time {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.show-price {
-  font-size: 13px;
-  color: var(--gold);
 }

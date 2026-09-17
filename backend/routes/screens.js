@@ -5,7 +5,7 @@ const Seat = require("../models/seat");
 const requireAuth = require("../middleware/requireAuth");
 const requireAdmin = require("../middleware/requireAdmin");
 
-// GET /api/screens?theater_id=... - list screens, optionally filtered by theater
+// GET /api/screens?theater_id=
 router.get("/", async (req, res) => {
   try {
     const filter = {};
@@ -18,10 +18,9 @@ router.get("/", async (req, res) => {
 });
 
 // POST /api/screens
-// body: { theater_id, name, rows, seats_per_row }
-// Automatically generates a seat layout: last row = Recliner, next 2 rows = Premium, rest = Normal
+// body: { theater_id, name, screen_type, rows, seats_per_row }
 router.post("/", requireAuth, requireAdmin, async (req, res) => {
-  const { theater_id, name, rows = 5, seats_per_row = 8 } = req.body;
+  const { theater_id, name, screen_type = "Standard", rows = 5, seats_per_row = 8 } = req.body;
 
   if (!theater_id || !name) {
     return res.status(400).json({ error: "theater_id and name are required" });
@@ -31,6 +30,7 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
     const screen = await Screen.create({
       theater_id,
       name,
+      screen_type,
       total_seats: rows * seats_per_row,
     });
 
@@ -46,21 +46,23 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
     });
 
     const seats = await Seat.insertMany(seatDocs);
-
     res.status(201).json({ screen, seatCount: seats.length });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
-// PUT /api/screens/:id - update a screen's name/theater only.
-// Seat layout is NOT regenerated here, since existing bookings may already reference these seats.
+// PUT /api/screens/:id - update name/theater/screen_type only (not seat layout)
 router.put("/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
-    const { name, theater_id } = req.body;
+    const { name, theater_id, screen_type } = req.body;
     const screen = await Screen.findByIdAndUpdate(
       req.params.id,
-      { ...(name && { name }), ...(theater_id && { theater_id }) },
+      {
+        ...(name && { name }),
+        ...(theater_id && { theater_id }),
+        ...(screen_type && { screen_type }),
+      },
       { new: true, runValidators: true }
     );
     if (!screen) return res.status(404).json({ error: "Screen not found" });
@@ -70,8 +72,7 @@ router.put("/:id", requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
-// DELETE /api/screens/:id - delete a screen and its seats.
-// Note: any showtimes still referencing this screen will become orphaned; delete those first if needed.
+// DELETE /api/screens/:id
 router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
     const screen = await Screen.findByIdAndDelete(req.params.id);

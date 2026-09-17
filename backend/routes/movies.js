@@ -4,17 +4,30 @@ const Movie = require("../models/movie");
 const requireAuth = require("../middleware/requireAuth");
 const requireAdmin = require("../middleware/requireAdmin");
 
-// GET /api/movies - list all movies
+// GET /api/movies?search=&language=&format=
 router.get("/", async (req, res) => {
   try {
-    const movies = await Movie.find().sort({ release_date: -1 });
+    const filter = {};
+
+    if (req.query.search) {
+      // Case-insensitive partial match on title
+      filter.title = { $regex: req.query.search, $options: "i" };
+    }
+    if (req.query.language) {
+      filter.language = req.query.language;
+    }
+    if (req.query.format) {
+      filter.formats = req.query.format; // matches if the formats array contains this value
+    }
+
+    const movies = await Movie.find(filter).sort({ release_date: -1 });
     res.json(movies);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/movies/:id - get a single movie
+// GET /api/movies/:id
 router.get("/:id", async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);

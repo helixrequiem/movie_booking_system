@@ -3,8 +3,6 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/client";
 import "./ShowtimeList.css";
 
-// Builds the next 7 days starting today, each with a YYYY-MM-DD key for the API
-// and short display labels for the date strip UI
 function buildNextDays(count = 7) {
   const days = [];
   const today = new Date();
@@ -30,6 +28,7 @@ function ShowtimeList() {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [screenTypeFilter, setScreenTypeFilter] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -43,24 +42,33 @@ function ShowtimeList() {
       .finally(() => setLoading(false));
   }, [movieId, selectedDate]);
 
-  // If no movie info could come from a showtime, fetch it directly (e.g. when a day has zero showtimes)
   useEffect(() => {
     if (!movie) {
       api.get(`/movies/${movieId}`).then((res) => setMovie(res.data)).catch(() => {});
     }
   }, [movieId, movie]);
 
-  // Group showtimes by theater so each theater shows one row of time buttons
+  // Every distinct screen type present in today's results, used to build the filter chips
+  const screenTypes = useMemo(() => {
+    const set = new Set(showtimes.map((s) => s.screen_id?.screen_type).filter(Boolean));
+    return Array.from(set);
+  }, [showtimes]);
+
+  const filteredShowtimes = useMemo(() => {
+    if (!screenTypeFilter) return showtimes;
+    return showtimes.filter((s) => s.screen_id?.screen_type === screenTypeFilter);
+  }, [showtimes, screenTypeFilter]);
+
   const byTheater = useMemo(() => {
     const groups = {};
-    showtimes.forEach((s) => {
+    filteredShowtimes.forEach((s) => {
       const theater = s.screen_id?.theater_id;
       const key = theater?._id || "unknown";
       if (!groups[key]) groups[key] = { theater, showtimes: [] };
       groups[key].showtimes.push(s);
     });
     return Object.values(groups);
-  }, [showtimes]);
+  }, [filteredShowtimes]);
 
   if (error) return <div className="status-message error">Couldn't load showtimes: {error}</div>;
 
@@ -94,6 +102,26 @@ function ShowtimeList() {
         ))}
       </div>
 
+      {screenTypes.length > 1 && (
+        <div className="type-filter-row">
+          <button
+            className={`type-chip ${!screenTypeFilter ? "active" : ""}`}
+            onClick={() => setScreenTypeFilter("")}
+          >
+            All Types
+          </button>
+          {screenTypes.map((type) => (
+            <button
+              key={type}
+              className={`type-chip ${screenTypeFilter === type ? "active" : ""}`}
+              onClick={() => setScreenTypeFilter(type)}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      )}
+
       {loading ? (
         <div className="status-message">Loading showtimes…</div>
       ) : byTheater.length === 0 ? (
@@ -118,6 +146,7 @@ function ShowtimeList() {
                       className="showtime-card"
                       onClick={() => navigate(`/showtimes/${s._id}/seats`)}
                     >
+                      <span className="screen-type-label">{s.screen_id?.screen_type}</span>
                       <span className="show-time">{time}</span>
                       <span className="show-price">₹{s.base_price}</span>
                     </button>
