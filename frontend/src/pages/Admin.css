@@ -116,11 +116,37 @@
   resize: vertical;
 }
 
-.admin-card input:focus,
-.admin-card select:focus,
-.admin-card textarea:focus {
-  outline: none;
-  border-color: var(--gold);
+.field-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.checkbox-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.checkbox-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  width: auto;
+}
+
+.checkbox-chip input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  accent-color: var(--gold);
 }
 
 .admin-row {
@@ -140,7 +166,7 @@
   margin: 0;
 }
 
-.admin-card button {
+.admin-card button[type="submit"] {
   background: var(--gold);
   color: #17131f;
   border: none;
@@ -152,7 +178,7 @@
   margin-top: 6px;
 }
 
-.admin-card button:hover {
+.admin-card button[type="submit"]:hover {
   opacity: 0.9;
 }
 

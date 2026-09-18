@@ -4,6 +4,9 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import "./Admin.css";
 
+const FORMAT_OPTIONS = ["2D", "3D"];
+const SCREEN_TYPE_OPTIONS = ["Standard", "IMAX", "4DX", "Recliner Lounge"];
+
 function Admin() {
   const { user, loading: authLoading } = useAuth();
   const [theaters, setTheaters] = useState([]);
@@ -11,7 +14,7 @@ function Admin() {
   const [movies, setMovies] = useState([]);
   const [showtimes, setShowtimes] = useState([]);
 
-  const [movieForm, setMovieForm] = useState({
+  const emptyMovieForm = {
     title: "",
     description: "",
     duration_mins: "",
@@ -22,11 +25,15 @@ function Admin() {
     trailer_url: "",
     rating: "",
     cast: "",
-  });
+    formats: ["2D"],
+  };
+
+  const [movieForm, setMovieForm] = useState(emptyMovieForm);
   const [theaterForm, setTheaterForm] = useState({ name: "", city: "", address: "" });
   const [screenForm, setScreenForm] = useState({
     theater_id: "",
     name: "",
+    screen_type: "Standard",
     rows: 5,
     seats_per_row: 8,
   });
@@ -72,18 +79,13 @@ function Admin() {
     }
   }
 
-  const emptyMovieForm = {
-    title: "",
-    description: "",
-    duration_mins: "",
-    language: "",
-    genre: "",
-    poster_url: "",
-    release_date: "",
-    trailer_url: "",
-    rating: "",
-    cast: "",
-  };
+  function toggleFormat(fmt) {
+    setMovieForm((prev) => {
+      const has = prev.formats.includes(fmt);
+      const next = has ? prev.formats.filter((f) => f !== fmt) : [...prev.formats, fmt];
+      return { ...prev, formats: next };
+    });
+  }
 
   function startEditingMovie(movie) {
     setEditingMovieId(movie._id);
@@ -98,6 +100,7 @@ function Admin() {
       trailer_url: movie.trailer_url || "",
       rating: movie.rating ?? "",
       cast: (movie.cast || []).map((c) => `${c.name}${c.role ? " - " + c.role : ""}`).join("\n"),
+      formats: movie.formats?.length ? movie.formats : ["2D"],
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -119,7 +122,6 @@ function Admin() {
 
   async function handleMovieSubmit(e) {
     e.preventDefault();
-    // Cast entered as one "Name - Role" per line, parsed into the array the backend expects
     const cast = movieForm.cast
       .split("\n")
       .map((line) => line.trim())
@@ -195,6 +197,7 @@ function Admin() {
     setScreenForm({
       theater_id: screen.theater_id || "",
       name: screen.name || "",
+      screen_type: screen.screen_type || "Standard",
       rows: 5,
       seats_per_row: 8,
     });
@@ -203,7 +206,7 @@ function Admin() {
 
   function cancelEditingScreen() {
     setEditingScreenId(null);
-    setScreenForm({ theater_id: "", name: "", rows: 5, seats_per_row: 8 });
+    setScreenForm({ theater_id: "", name: "", screen_type: "Standard", rows: 5, seats_per_row: 8 });
   }
 
   async function deleteScreen(id) {
@@ -221,12 +224,11 @@ function Admin() {
     const isEditing = Boolean(editingScreenId);
 
     if (isEditing) {
-      // Editing only updates name/theater — seat layout is untouched since bookings may reference it
       const reset = await submitForm(
         "screen",
         `/screens/${editingScreenId}`,
-        { name: screenForm.name, theater_id: screenForm.theater_id },
-        { theater_id: "", name: "", rows: 5, seats_per_row: 8 },
+        { name: screenForm.name, theater_id: screenForm.theater_id, screen_type: screenForm.screen_type },
+        { theater_id: "", name: "", screen_type: "Standard", rows: 5, seats_per_row: 8 },
         "put"
       );
       if (reset) {
@@ -240,7 +242,7 @@ function Admin() {
       "screen",
       "/screens",
       { ...screenForm, rows: Number(screenForm.rows), seats_per_row: Number(screenForm.seats_per_row) },
-      { theater_id: "", name: "", rows: 5, seats_per_row: 8 }
+      { theater_id: "", name: "", screen_type: "Standard", rows: 5, seats_per_row: 8 }
     );
     if (reset) setScreenForm(reset);
   }
@@ -378,6 +380,21 @@ function Admin() {
             value={movieForm.rating}
             onChange={(e) => setMovieForm({ ...movieForm, rating: e.target.value })}
           />
+
+          <label className="field-label">Available Formats</label>
+          <div className="checkbox-row">
+            {FORMAT_OPTIONS.map((fmt) => (
+              <label key={fmt} className="checkbox-chip">
+                <input
+                  type="checkbox"
+                  checked={movieForm.formats.includes(fmt)}
+                  onChange={() => toggleFormat(fmt)}
+                />
+                {fmt}
+              </label>
+            ))}
+          </div>
+
           <textarea
             placeholder={"Cast, one per line:\nActor Name - Role"}
             value={movieForm.cast}
@@ -400,6 +417,7 @@ function Admin() {
                 <span className="admin-list-title">{m.title}</span>
                 <span className="admin-list-meta">
                   {m.language} · {m.duration_mins} min
+                  {m.formats?.length > 0 && ` · ${m.formats.join("/")}`}
                 </span>
                 <div className="admin-list-actions">
                   <button type="button" onClick={() => startEditingMovie(m)}>
@@ -492,6 +510,17 @@ function Admin() {
             onChange={(e) => setScreenForm({ ...screenForm, name: e.target.value })}
             required
           />
+          <label className="field-label">Screen Type</label>
+          <select
+            value={screenForm.screen_type}
+            onChange={(e) => setScreenForm({ ...screenForm, screen_type: e.target.value })}
+          >
+            {SCREEN_TYPE_OPTIONS.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
           {!editingScreenId && (
             <div className="admin-row">
               <input
@@ -512,7 +541,7 @@ function Admin() {
           )}
           <p className="admin-hint">
             {editingScreenId
-              ? "Editing only updates the name/theater — seat layout stays as-is."
+              ? "Editing only updates the name/theater/type — seat layout stays as-is."
               : "Seats are auto-generated. Last row = Recliner, next 2 = Premium."}
           </p>
           <button type="submit">{editingScreenId ? "Update Screen" : "Add Screen"}</button>
@@ -530,7 +559,9 @@ function Admin() {
             {screens.map((s) => (
               <div className="admin-list-item" key={s._id}>
                 <span className="admin-list-title">{s.name}</span>
-                <span className="admin-list-meta">{s.total_seats} seats</span>
+                <span className="admin-list-meta">
+                  {s.screen_type || "Standard"} · {s.total_seats} seats
+                </span>
                 <div className="admin-list-actions">
                   <button type="button" onClick={() => startEditingScreen(s)}>
                     Edit
@@ -571,7 +602,7 @@ function Admin() {
             <option value="">Select screen…</option>
             {screens.map((s) => (
               <option key={s._id} value={s._id}>
-                {s.name}
+                {s.name} ({s.screen_type || "Standard"})
               </option>
             ))}
           </select>
