@@ -42,6 +42,7 @@ function Admin() {
     screen_id: "",
     start_time: "",
     base_price: "",
+    format: "2D",
   });
 
   const [status, setStatus] = useState({});
@@ -254,13 +255,14 @@ function Admin() {
       screen_id: showtime.screen_id?._id || showtime.screen_id || "",
       start_time: showtime.start_time ? showtime.start_time.slice(0, 16) : "",
       base_price: showtime.base_price ?? "",
+      format: showtime.format || "2D",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function cancelEditingShowtime() {
     setEditingShowtimeId(null);
-    setShowtimeForm({ movie_id: "", screen_id: "", start_time: "", base_price: "" });
+    setShowtimeForm({ movie_id: "", screen_id: "", start_time: "", base_price: "" , format: "2D"});
   }
 
   async function deleteShowtime(id) {
@@ -612,14 +614,22 @@ function Admin() {
             onChange={(e) => setShowtimeForm({ ...showtimeForm, start_time: e.target.value })}
             required
           />
-          <input
-            type="number"
-            placeholder="Base price (₹)"
-            value={showtimeForm.base_price}
-            onChange={(e) => setShowtimeForm({ ...showtimeForm, base_price: e.target.value })}
-            required
-          />
-          <button type="submit">{editingShowtimeId ? "Update Showtime" : "Add Showtime"}</button>
+                  <input
+          type="number"
+          placeholder="Base price (₹)"
+          value={showtimeForm.base_price}
+          onChange={(e) => setShowtimeForm({ ...showtimeForm, base_price: e.target.value })}
+          required
+        />
+        <select
+          value={showtimeForm.format}
+          onChange={(e) => setShowtimeForm({ ...showtimeForm, format: e.target.value })}
+        >
+          <option value="2D">2D</option>
+          <option value="3D">3D</option>
+        </select>
+        <button type="submit">{editingShowtimeId ? "Update Showtime" : "Add Showtime"}</button>
+                  
           {editingShowtimeId && (
             <button type="button" className="admin-cancel-btn" onClick={cancelEditingShowtime}>
               Cancel Edit

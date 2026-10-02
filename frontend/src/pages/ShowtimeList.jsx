@@ -29,6 +29,7 @@ function ShowtimeList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [screenTypeFilter, setScreenTypeFilter] = useState("");
+  const [formatFilter, setFormatFilter] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -48,16 +49,29 @@ function ShowtimeList() {
     }
   }, [movieId, movie]);
 
-  // Every distinct screen type present in today's results, used to build the filter chips
+  // Reset filters whenever the date changes, since available options can differ per day
+  useEffect(() => {
+    setScreenTypeFilter("");
+    setFormatFilter("");
+  }, [selectedDate]);
+
   const screenTypes = useMemo(() => {
     const set = new Set(showtimes.map((s) => s.screen_id?.screen_type).filter(Boolean));
     return Array.from(set);
   }, [showtimes]);
 
+  const formats = useMemo(() => {
+    const set = new Set(showtimes.map((s) => s.format).filter(Boolean));
+    return Array.from(set);
+  }, [showtimes]);
+
   const filteredShowtimes = useMemo(() => {
-    if (!screenTypeFilter) return showtimes;
-    return showtimes.filter((s) => s.screen_id?.screen_type === screenTypeFilter);
-  }, [showtimes, screenTypeFilter]);
+    return showtimes.filter((s) => {
+      const matchesType = !screenTypeFilter || s.screen_id?.screen_type === screenTypeFilter;
+      const matchesFormat = !formatFilter || s.format === formatFilter;
+      return matchesType && matchesFormat;
+    });
+  }, [showtimes, screenTypeFilter, formatFilter]);
 
   const byTheater = useMemo(() => {
     const groups = {};
@@ -102,30 +116,60 @@ function ShowtimeList() {
         ))}
       </div>
 
-      {screenTypes.length > 1 && (
-        <div className="type-filter-row">
-          <button
-            className={`type-chip ${!screenTypeFilter ? "active" : ""}`}
-            onClick={() => setScreenTypeFilter("")}
-          >
-            All Types
-          </button>
-          {screenTypes.map((type) => (
-            <button
-              key={type}
-              className={`type-chip ${screenTypeFilter === type ? "active" : ""}`}
-              onClick={() => setScreenTypeFilter(type)}
-            >
-              {type}
-            </button>
-          ))}
+      {(formats.length > 1 || screenTypes.length > 1) && (
+        <div className="filters-stack">
+          {formats.length > 1 && (
+            <div className="type-filter-row">
+              <span className="filter-label">Format</span>
+              <button
+                className={`type-chip ${!formatFilter ? "active" : ""}`}
+                onClick={() => setFormatFilter("")}
+              >
+                All
+              </button>
+              {formats.map((fmt) => (
+                <button
+                  key={fmt}
+                  className={`type-chip ${formatFilter === fmt ? "active" : ""}`}
+                  onClick={() => setFormatFilter(fmt)}
+                >
+                  {fmt}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {screenTypes.length > 1 && (
+            <div className="type-filter-row">
+              <span className="filter-label">Theater Type</span>
+              <button
+                className={`type-chip ${!screenTypeFilter ? "active" : ""}`}
+                onClick={() => setScreenTypeFilter("")}
+              >
+                All
+              </button>
+              {screenTypes.map((type) => (
+                <button
+                  key={type}
+                  className={`type-chip ${screenTypeFilter === type ? "active" : ""}`}
+                  onClick={() => setScreenTypeFilter(type)}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {loading ? (
         <div className="status-message">Loading showtimes…</div>
       ) : byTheater.length === 0 ? (
-        <div className="status-message">No showtimes on this date. Try another day.</div>
+        <div className="status-message">
+          {showtimes.length === 0
+            ? "No showtimes on this date. Try another day."
+            : "No showtimes match your filters. Try clearing them."}
+        </div>
       ) : (
         <div className="theater-list">
           {byTheater.map(({ theater, showtimes }) => (
@@ -146,7 +190,10 @@ function ShowtimeList() {
                       className="showtime-card"
                       onClick={() => navigate(`/showtimes/${s._id}/seats`)}
                     >
-                      <span className="screen-type-label">{s.screen_id?.screen_type}</span>
+                      <span className="screen-type-label">
+                        {s.screen_id?.screen_type}
+                        {s.format ? ` · ${s.format}` : ""}
+                      </span>
                       <span className="show-time">{time}</span>
                       <span className="show-price">₹{s.base_price}</span>
                     </button>

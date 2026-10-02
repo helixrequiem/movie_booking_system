@@ -91,7 +91,7 @@ function MyBookings() {
                 <div className="booking-side">
                   <span className={`status-pill ${b.status}`}>{b.status}</span>
                   <span className="booking-price">₹{b.total_amount}</span>
-                  {b.status === "confirmed" && (
+                  {b.status === "confirmed" && new Date(b.showtime_id?.start_time) > new Date() && (
                     <button
                       className="cancel-btn"
                       onClick={(e) => handleCancel(e, b._id)}

@@ -6,6 +6,7 @@ const showtimeSchema = new mongoose.Schema(
     screen_id: { type: mongoose.Schema.Types.ObjectId, ref: "Screen", required: true },
     start_time: { type: Date, required: true },
     base_price: { type: Number, required: true },
+    format: { type: String, enum: ["2D", "3D"], default: "2D" },
   },
   { timestamps: true }
 );

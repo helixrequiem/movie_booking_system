@@ -100,11 +100,26 @@
   font-size: 11px;
 }
 
+.filters-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
 .type-filter-row {
   display: flex;
+  align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 28px;
+}
+
+.filter-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-right: 4px;
 }
 
 .type-chip {
@@ -211,6 +226,8 @@
   align-items: center;
   justify-content: center;
   color: var(--text-dim);
+  text-align: center;
+  padding: 24px;
 }
 
 .status-message.error {

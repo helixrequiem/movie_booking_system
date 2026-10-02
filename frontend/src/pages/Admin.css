@@ -144,9 +144,14 @@
 }
 
 .checkbox-chip input[type="checkbox"] {
-  width: auto;
+  appearance: checkbox;
+  -webkit-appearance: checkbox;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
   margin: 0;
   accent-color: var(--gold);
+  cursor: pointer;
 }
 
 .admin-row {
