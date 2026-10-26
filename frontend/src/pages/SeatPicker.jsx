@@ -19,8 +19,6 @@ function SeatPicker() {
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [submitError, setSubmitError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
 
   function loadSeats() {
     return api.get(`/showtimes/${showtimeId}/seats`).then((res) => setSeats(res.data));
@@ -58,35 +56,13 @@ function SeatPicker() {
     .filter((s) => selected.includes(s._id))
     .reduce((sum, s) => sum + seatPrice(s), 0);
 
-  async function handleCheckout() {
-    setSubmitError(null);
-
+  // No booking is created here any more. We just move to the review page.
+  function handleCheckout() {
     if (!user) {
-      // Send them to log in, and remember to come back to this exact seat picker after
       navigate("/login", { state: { from: `/showtimes/${showtimeId}/seats` } });
       return;
     }
-
-    setSubmitting(true);
-    try {
-      const res = await api.post("/bookings", {
-        showtime_id: showtimeId,
-        seat_ids: selected,
-        customer_name: user.name,
-        customer_email: user.email,
-      });
-      navigate(`/bookings/${res.data.booking_id}`);
-    } catch (err) {
-      if (err.response?.status === 409) {
-        setSubmitError(err.response.data.error);
-        setSelected([]);
-        await loadSeats();
-      } else {
-        setSubmitError(err.response?.data?.error || err.message);
-      }
-    } finally {
-      setSubmitting(false);
-    }
+    navigate(`/showtimes/${showtimeId}/confirm`, { state: { seat_ids: selected } });
   }
 
   if (loading) return <div className="status-message">Loading seats…</div>;
@@ -165,12 +141,6 @@ function SeatPicker() {
         </div>
       )}
 
-      {selected.length > 0 && submitError && (
-        <div className="checkout-form">
-          <p className="form-error">{submitError}</p>
-        </div>
-      )}
-
       <div className="booking-bar">
         <div>
           <span className="seat-count">{selected.length} seat(s) selected</span>
@@ -178,10 +148,10 @@ function SeatPicker() {
         </div>
         <button
           className="checkout-btn"
-          disabled={selected.length === 0 || submitting}
+          disabled={selected.length === 0}
           onClick={handleCheckout}
         >
-          {submitting ? "Booking…" : user ? "Proceed to Checkout" : "Log in to Book"}
+          {user ? "Review Order" : "Log in to Book"}
         </button>
       </div>
     </div>

@@ -6,10 +6,12 @@ import MovieDetail from "./pages/MovieDetail";
 import ShowtimeList from "./pages/ShowtimeList";
 import SeatPicker from "./pages/SeatPicker";
 import BookingConfirmation from "./pages/BookingConfirmation";
+import ConfirmBooking from "./pages/Confirmbooking";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import MyBookings from "./pages/MyBookings";
+
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/showtimes/:showtimeId/confirm" element={<ConfirmBooking />} />
       </Routes>
     </>
   );

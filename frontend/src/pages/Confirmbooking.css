@@ -1,0 +1,23 @@
+.confirm-page { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+.confirm-title { font-family: "Bebas Neue", sans-serif; font-size: 2.6rem; letter-spacing: 2px; color: var(--gold); margin: 8px 0 0; }
+.confirm-sub { color: var(--text-dim); margin: 4px 0 20px; }
+.confirm-card { background: var(--surface); border: 1px solid rgba(212,175,55,.25); border-radius: 12px; padding: 20px; }
+.confirm-top { display: flex; gap: 16px; margin-bottom: 20px; }
+.confirm-top h2 { margin: 0 0 4px; font-size: 1.4rem; }
+.confirm-top p { margin: 3px 0; }
+.confirm-poster { width: 96px; height: 140px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+.confirm-when { color: var(--gold); font-weight: 600; margin-top: 8px !important; }
+.confirm-page .dim { color: var(--text-dim); }
+.confirm-seats { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.confirm-seats th, .confirm-seats td { padding: 8px 4px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.08); }
+.confirm-seats th { color: var(--text-dim); font-weight: 500; font-size: .85rem; }
+.confirm-seats .right { text-align: right; }
+.confirm-seats tfoot td { border-bottom: none; font-weight: 600; padding-top: 12px; }
+.confirm-seats .total { color: var(--gold); font-size: 1.3rem; }
+.confirm-customer { display: flex; flex-direction: column; gap: 2px; padding: 12px; background: rgba(255,255,255,.04); border-radius: 8px; margin-bottom: 16px; }
+.confirm-actions { display: flex; gap: 12px; }
+.confirm-actions button { flex: 1; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+.confirm-actions button:disabled { opacity: .6; cursor: not-allowed; }
+.confirm-actions .btn-primary { background: var(--gold); color: #1a1405; border: none; }
+.confirm-actions .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--text-dim); }
+@media (max-width: 480px) { .confirm-top { flex-direction: column; } .confirm-actions { flex-direction: column-reverse; } }
