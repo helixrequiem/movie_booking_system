@@ -145,10 +145,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Cancellation closes this long before the show starts
+const CANCEL_CUTOFF_MS = 2 * 60 * 60 * 1000; // 2 hours
+
 // PUT /api/bookings/:id/cancel - cancel a booking (frees the seats for that showtime)
 router.put("/:id/cancel", requireAuth, async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id);
+    const booking = await Booking.findById(req.params.id).populate("showtime_id");
     if (!booking) return res.status(404).json({ error: "Booking not found" });
 
     // Only the booking's own user can cancel it
@@ -160,8 +163,19 @@ router.put("/:id/cancel", requireAuth, async (req, res) => {
       return res.status(400).json({ error: "This booking is already cancelled" });
     }
 
+    // Block cancellation once the cutoff has passed (also covers shows already started)
+    const start = new Date(booking.showtime_id.start_time).getTime();
+    if (start - Date.now() < CANCEL_CUTOFF_MS) {
+      return res.status(400).json({
+        error: "Cancellation is closed. Bookings can only be cancelled up to 2 hours before the show.",
+      });
+    }
+
     booking.status = "cancelled";
     await booking.save();
+
+    // Mock refund: mark the payment record as refunded
+    await Payment.updateMany({ booking_id: booking._id }, { status: "refunded" });
 
     res.json({ booking });
   } catch (err) {

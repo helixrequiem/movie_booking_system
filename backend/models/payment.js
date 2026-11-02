@@ -7,7 +7,7 @@ const paymentSchema = new mongoose.Schema(
     provider_txn_id: { type: String },
     status: {
       type: String,
-      enum: ["pending", "success", "failed"],
+      enum: ["pending", "success", "failed", "refunded"],
       default: "pending",
     },
     amount: { type: Number, required: true },

@@ -4,6 +4,12 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import "./MyBookings.css";
 
+const CANCEL_CUTOFF_MS = 2 * 60 * 60 * 1000; // must match the server (2 hours)
+function canCancel(status, startTime) {
+  if (status !== "confirmed") return false;
+  return new Date(startTime).getTime() - Date.now() >= CANCEL_CUTOFF_MS;
+}
+
 function MyBookings() {
   const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState([]);
@@ -91,15 +97,17 @@ function MyBookings() {
                 <div className="booking-side">
                   <span className={`status-pill ${b.status}`}>{b.status}</span>
                   <span className="booking-price">₹{b.total_amount}</span>
-                  {b.status === "confirmed" && new Date(b.showtime_id?.start_time) > new Date() && (
-                    <button
-                      className="cancel-btn"
-                      onClick={(e) => handleCancel(e, b._id)}
-                      disabled={cancellingId === b._id}
+                  {canCancel(b.status, b.showtime_id?.start_time) ? (
+                  <button
+                  className="cancel-btn"
+                    onClick={(e) => handleCancel(e, b._id)}
+                    disabled={cancellingId === b._id}
                     >
-                      {cancellingId === b._id ? "Cancelling…" : "Cancel"}
-                    </button>
-                  )}
+                  {cancellingId === b._id ? "Cancelling…" : "Cancel"}
+                  </button>
+                  ) : (b.status === "confirmed" && (
+              <span className="cancel-closed">Cancellation closed</span>
+          ))}
                 </div>
               </Link>
             );
