@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api/client";
-import "./Bookingconfirmation.css";
+import "./BookingConfirmation.css";
 
 function BookingConfirmation() {
   const { bookingId } = useParams();
