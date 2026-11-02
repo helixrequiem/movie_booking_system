@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api/client";
-import "./BookingConfirmation.css";
+import "./Bookingconfirmation.css";
 
 function BookingConfirmation() {
   const { bookingId } = useParams();
@@ -79,11 +79,11 @@ function BookingConfirmation() {
           <span>₹{booking.total_amount}</span>
         </div>
 
-        {booking.status === "confirmed" && (
+        {booking.status === "confirmed" && new Date(showtime.start_time) > new Date() && (
           <button className="cancel-ticket-btn" onClick={handleCancel} disabled={cancelling}>
-            {cancelling ? "Cancelling…" : "Cancel Booking"}
+          {cancelling ? "Cancelling…" : "Cancel Booking"}
           </button>
-        )}
+      )}
       </div>
 
       <Link to="/movies" className="back-link">
