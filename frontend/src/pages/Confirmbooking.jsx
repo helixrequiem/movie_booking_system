@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
-import "./ConfirmBooking.css";
+import "./Confirmbooking.css";
 
 const CATEGORY_PRICE_MULTIPLIER = { Normal: 1, Premium: 1.5, Recliner: 2 };
 
