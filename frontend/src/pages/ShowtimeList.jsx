@@ -36,8 +36,11 @@ function ShowtimeList() {
     api
       .get(`/showtimes?movie_id=${movieId}&date=${selectedDate}`)
       .then((res) => {
-        setShowtimes(res.data);
-        if (res.data.length > 0) setMovie(res.data[0].movie_id);
+      const now = new Date();
+      // keep only shows that haven't started yet
+      setShowtimes(res.data.filter((s) => new Date(s.start_time) > now));
+      // use the unfiltered list for the header, so the movie still shows when every show is over
+      if (res.data.length > 0) setMovie(res.data[0].movie_id);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -162,12 +165,12 @@ function ShowtimeList() {
         </div>
       )}
 
-      {loading ? (
+           {loading ? (
         <div className="status-message">Loading showtimes…</div>
       ) : byTheater.length === 0 ? (
         <div className="status-message">
           {showtimes.length === 0
-            ? "No showtimes on this date. Try another day."
+            ? "No upcoming showtimes on this date. Try another day."
             : "No showtimes match your filters. Try clearing them."}
         </div>
       ) : (

@@ -64,6 +64,11 @@ router.post("/", requireAuth, async (req, res) => {
     const showtime = await Showtime.findById(showtime_id);
     if (!showtime) return res.status(404).json({ error: "Showtime not found" });
 
+    // NEW: no bookings once the show has started
+    if (new Date(showtime.start_time).getTime() <= Date.now()) {
+    return res.status(400).json({ error: "This show has already started. Booking is closed." });
+  }
+
     // Step 1: find every OTHER booking already made for this same showtime
     const existingBookings = await Booking.find({
       showtime_id,
