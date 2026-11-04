@@ -58,7 +58,7 @@ function Admin() {
   const [editingScreenId, setEditingScreenId] = useState(null);
   const [editingShowtimeId, setEditingShowtimeId] = useState(null);
 
-    function refreshLists() {
+  function refreshLists() {
     api.get("/theaters").then((res) => setTheaters(res.data));
     api.get("/screens").then((res) => setScreens(res.data));
     api.get("/movies").then((res) => setMovies(res.data));
@@ -66,14 +66,7 @@ function Admin() {
     api
       .get("/bookings/admin/revenue")
       .then((res) => setRevenue(res.data))
-      .catch((err) =>
-        alert(
-          "Revenue failed: " +
-            (err.response?.status || "") +
-            " " +
-            (err.response?.data?.error || err.message)
-        )
-      );
+      .catch(() => {});
   }
 
   useEffect(refreshLists, []);
