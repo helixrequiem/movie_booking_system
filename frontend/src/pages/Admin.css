@@ -282,3 +282,76 @@
   border-color: #e08a8a;
   color: #e08a8a;
 }
+/* ---------- Revenue tab ---------- */
+.revenue-card {
+  overflow-x: auto;
+}
+
+.revenue-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  background: var(--bg);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 12px;
+}
+
+.stat-label {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.stat-value {
+  color: var(--gold);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 2.6rem;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.revenue-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.revenue-table th {
+  text-align: left;
+  padding: 12px 10px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.35);
+}
+
+.revenue-table td {
+  padding: 14px 10px;
+  color: var(--text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.revenue-table tbody tr:hover {
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.revenue-table td:nth-child(n + 4),
+.revenue-table th:nth-child(n + 4) {
+  text-align: right;
+}
+
+.rev-cell {
+  color: var(--gold);
+  font-weight: 700;
+}

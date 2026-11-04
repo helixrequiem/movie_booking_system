@@ -17,6 +17,7 @@ function Admin() {
     byShowtime: {},
     total: { revenue: 0, bookings: 0, seats: 0 },
   });
+
   const emptyMovieForm = {
     title: "",
     description: "",
@@ -31,6 +32,14 @@ function Admin() {
     formats: ["2D"],
   };
 
+  const emptyShowtimeForm = {
+    movie_id: "",
+    screen_id: "",
+    start_time: "",
+    base_price: "",
+    format: "2D",
+  };
+
   const [movieForm, setMovieForm] = useState(emptyMovieForm);
   const [theaterForm, setTheaterForm] = useState({ name: "", city: "", address: "" });
   const [screenForm, setScreenForm] = useState({
@@ -40,13 +49,7 @@ function Admin() {
     rows: 5,
     seats_per_row: 8,
   });
-  const [showtimeForm, setShowtimeForm] = useState({
-    movie_id: "",
-    screen_id: "",
-    start_time: "",
-    base_price: "",
-    format: "2D",
-  });
+  const [showtimeForm, setShowtimeForm] = useState(emptyShowtimeForm);
 
   const [status, setStatus] = useState({});
   const [activeTab, setActiveTab] = useState("movies");
@@ -60,17 +63,12 @@ function Admin() {
     api.get("/screens").then((res) => setScreens(res.data));
     api.get("/movies").then((res) => setMovies(res.data));
     api.get("/showtimes").then((res) => setShowtimes(res.data));
-  }
-    function refreshLists() {
-    api.get("/theaters").then((res) => setTheaters(res.data));
-    api.get("/screens").then((res) => setScreens(res.data));
-    api.get("/movies").then((res) => setMovies(res.data));
-    api.get("/showtimes").then((res) => setShowtimes(res.data));
     api
       .get("/bookings/admin/revenue")
       .then((res) => setRevenue(res.data))
       .catch(() => {});
   }
+
   useEffect(refreshLists, []);
 
   async function submitForm(key, endpoint, payload, resetTo, method = "post") {
@@ -274,7 +272,7 @@ function Admin() {
 
   function cancelEditingShowtime() {
     setEditingShowtimeId(null);
-    setShowtimeForm({ movie_id: "", screen_id: "", start_time: "", base_price: "" , format: "2D"});
+    setShowtimeForm(emptyShowtimeForm);
   }
 
   async function deleteShowtime(id) {
@@ -297,7 +295,7 @@ function Admin() {
       "showtime",
       endpoint,
       { ...showtimeForm, base_price: Number(showtimeForm.base_price) },
-      { movie_id: "", screen_id: "", start_time: "", base_price: "" },
+      emptyShowtimeForm,
       method
     );
     if (reset) {
@@ -318,7 +316,7 @@ function Admin() {
   return (
     <div className="admin-page">
       <h1>Admin Panel</h1>
-      <p className="admin-subtitle">Manage movies, theaters, screens, and showtimes</p>
+      <p className="admin-subtitle">Manage movies, theaters, screens, showtimes and revenue</p>
 
       <div className="admin-tabs">
         {[
@@ -326,11 +324,15 @@ function Admin() {
           { key: "theaters", label: `Theaters (${theaters.length})` },
           { key: "screens", label: `Screens (${screens.length})` },
           { key: "showtimes", label: `Showtimes (${showtimes.length})` },
+          { key: "revenue", label: "Revenue" },
         ].map((tab) => (
           <button
             key={tab.key}
             className={`admin-tab ${activeTab === tab.key ? "active" : ""}`}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => {
+              setActiveTab(tab.key);
+              if (tab.key === "revenue") refreshLists();
+            }}
           >
             {tab.label}
           </button>
@@ -338,358 +340,403 @@ function Admin() {
       </div>
 
       {activeTab === "movies" && (
-      <div className="admin-section-grid">
-        <form className="admin-card" onSubmit={handleMovieSubmit}>
-          <h2>{editingMovieId ? "Edit Movie" : "Add Movie"}</h2>
-          <input
-            placeholder="Title"
-            value={movieForm.title}
-            onChange={(e) => setMovieForm({ ...movieForm, title: e.target.value })}
-            required
-          />
-          <textarea
-            placeholder="Description"
-            value={movieForm.description}
-            onChange={(e) => setMovieForm({ ...movieForm, description: e.target.value })}
-          />
-          <input
-            type="number"
-            placeholder="Duration (mins)"
-            value={movieForm.duration_mins}
-            onChange={(e) => setMovieForm({ ...movieForm, duration_mins: e.target.value })}
-            required
-          />
-          <input
-            placeholder="Language"
-            value={movieForm.language}
-            onChange={(e) => setMovieForm({ ...movieForm, language: e.target.value })}
-            required
-          />
-          <input
-            placeholder="Genre"
-            value={movieForm.genre}
-            onChange={(e) => setMovieForm({ ...movieForm, genre: e.target.value })}
-          />
-          <input
-            placeholder="Poster URL"
-            value={movieForm.poster_url}
-            onChange={(e) => setMovieForm({ ...movieForm, poster_url: e.target.value })}
-          />
-          <input
-            type="date"
-            value={movieForm.release_date}
-            onChange={(e) => setMovieForm({ ...movieForm, release_date: e.target.value })}
-          />
-          <input
-            placeholder="Trailer URL (YouTube)"
-            value={movieForm.trailer_url}
-            onChange={(e) => setMovieForm({ ...movieForm, trailer_url: e.target.value })}
-          />
-          <input
-            type="number"
-            step="0.1"
-            min="0"
-            max="10"
-            placeholder="Rating (e.g. 8.6)"
-            value={movieForm.rating}
-            onChange={(e) => setMovieForm({ ...movieForm, rating: e.target.value })}
-          />
+        <div className="admin-section-grid">
+          <form className="admin-card" onSubmit={handleMovieSubmit}>
+            <h2>{editingMovieId ? "Edit Movie" : "Add Movie"}</h2>
+            <input
+              placeholder="Title"
+              value={movieForm.title}
+              onChange={(e) => setMovieForm({ ...movieForm, title: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Description"
+              value={movieForm.description}
+              onChange={(e) => setMovieForm({ ...movieForm, description: e.target.value })}
+            />
+            <input
+              type="number"
+              placeholder="Duration (mins)"
+              value={movieForm.duration_mins}
+              onChange={(e) => setMovieForm({ ...movieForm, duration_mins: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Language"
+              value={movieForm.language}
+              onChange={(e) => setMovieForm({ ...movieForm, language: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Genre"
+              value={movieForm.genre}
+              onChange={(e) => setMovieForm({ ...movieForm, genre: e.target.value })}
+            />
+            <input
+              placeholder="Poster URL"
+              value={movieForm.poster_url}
+              onChange={(e) => setMovieForm({ ...movieForm, poster_url: e.target.value })}
+            />
+            <input
+              type="date"
+              value={movieForm.release_date}
+              onChange={(e) => setMovieForm({ ...movieForm, release_date: e.target.value })}
+            />
+            <input
+              placeholder="Trailer URL (YouTube)"
+              value={movieForm.trailer_url}
+              onChange={(e) => setMovieForm({ ...movieForm, trailer_url: e.target.value })}
+            />
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              placeholder="Rating (e.g. 8.6)"
+              value={movieForm.rating}
+              onChange={(e) => setMovieForm({ ...movieForm, rating: e.target.value })}
+            />
 
-          <label className="field-label">Available Formats</label>
-          <div className="checkbox-row">
-            {FORMAT_OPTIONS.map((fmt) => (
-              <label key={fmt} className="checkbox-chip">
-                <input
-                  type="checkbox"
-                  checked={movieForm.formats.includes(fmt)}
-                  onChange={() => toggleFormat(fmt)}
-                />
-                {fmt}
-              </label>
-            ))}
-          </div>
+            <label className="field-label">Available Formats</label>
+            <div className="checkbox-row">
+              {FORMAT_OPTIONS.map((fmt) => (
+                <label key={fmt} className="checkbox-chip">
+                  <input
+                    type="checkbox"
+                    checked={movieForm.formats.includes(fmt)}
+                    onChange={() => toggleFormat(fmt)}
+                  />
+                  {fmt}
+                </label>
+              ))}
+            </div>
 
-          <textarea
-            placeholder={"Cast, one per line:\nActor Name - Role"}
-            value={movieForm.cast}
-            onChange={(e) => setMovieForm({ ...movieForm, cast: e.target.value })}
-          />
-          <button type="submit">{editingMovieId ? "Update Movie" : "Add Movie"}</button>
-          {editingMovieId && (
-            <button type="button" className="admin-cancel-btn" onClick={cancelEditingMovie}>
-              Cancel Edit
-            </button>
-          )}
-          <StatusMessage forKey="movie" />
-        </form>
+            <textarea
+              placeholder={"Cast, one per line:\nActor Name - Role"}
+              value={movieForm.cast}
+              onChange={(e) => setMovieForm({ ...movieForm, cast: e.target.value })}
+            />
+            <button type="submit">{editingMovieId ? "Update Movie" : "Add Movie"}</button>
+            {editingMovieId && (
+              <button type="button" className="admin-cancel-btn" onClick={cancelEditingMovie}>
+                Cancel Edit
+              </button>
+            )}
+            <StatusMessage forKey="movie" />
+          </form>
 
-        <div className="admin-card admin-list-card">
-          <h2>Existing Movies ({movies.length})</h2>
-          <div className="admin-list">
-            {movies.map((m) => (
-              <div className="admin-list-item" key={m._id}>
-                <span className="admin-list-title">{m.title}</span>
-                <span className="admin-list-meta">
-                  {m.language} · {m.duration_mins} min
-                  {m.formats?.length > 0 && ` · ${m.formats.join("/")}`}
-                </span>
-                <div className="admin-list-actions">
-                  <button type="button" onClick={() => startEditingMovie(m)}>
-                    Edit
-                  </button>
-                  <button type="button" className="danger" onClick={() => deleteMovie(m._id)}>
-                    Delete
-                  </button>
+          <div className="admin-card admin-list-card">
+            <h2>Existing Movies ({movies.length})</h2>
+            <div className="admin-list">
+              {movies.map((m) => (
+                <div className="admin-list-item" key={m._id}>
+                  <span className="admin-list-title">{m.title}</span>
+                  <span className="admin-list-meta">
+                    {m.language} · {m.duration_mins} min
+                    {m.formats?.length > 0 && ` · ${m.formats.join("/")}`}
+                  </span>
+                  <div className="admin-list-actions">
+                    <button type="button" onClick={() => startEditingMovie(m)}>
+                      Edit
+                    </button>
+                    <button type="button" className="danger" onClick={() => deleteMovie(m._id)}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-            {movies.length === 0 && <p className="admin-hint">No movies yet.</p>}
+              ))}
+              {movies.length === 0 && <p className="admin-hint">No movies yet.</p>}
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {activeTab === "theaters" && (
-      <div className="admin-section-grid">
-        <form className="admin-card" onSubmit={handleTheaterSubmit}>
-          <h2>{editingTheaterId ? "Edit Theater" : "Add Theater"}</h2>
-          <input
-            placeholder="Name"
-            value={theaterForm.name}
-            onChange={(e) => setTheaterForm({ ...theaterForm, name: e.target.value })}
-            required
-          />
-          <input
-            placeholder="City"
-            value={theaterForm.city}
-            onChange={(e) => setTheaterForm({ ...theaterForm, city: e.target.value })}
-            required
-          />
-          <input
-            placeholder="Address"
-            value={theaterForm.address}
-            onChange={(e) => setTheaterForm({ ...theaterForm, address: e.target.value })}
-          />
-          <button type="submit">{editingTheaterId ? "Update Theater" : "Add Theater"}</button>
-          {editingTheaterId && (
-            <button type="button" className="admin-cancel-btn" onClick={cancelEditingTheater}>
-              Cancel Edit
-            </button>
-          )}
-          <StatusMessage forKey="theater" />
-        </form>
+        <div className="admin-section-grid">
+          <form className="admin-card" onSubmit={handleTheaterSubmit}>
+            <h2>{editingTheaterId ? "Edit Theater" : "Add Theater"}</h2>
+            <input
+              placeholder="Name"
+              value={theaterForm.name}
+              onChange={(e) => setTheaterForm({ ...theaterForm, name: e.target.value })}
+              required
+            />
+            <input
+              placeholder="City"
+              value={theaterForm.city}
+              onChange={(e) => setTheaterForm({ ...theaterForm, city: e.target.value })}
+              required
+            />
+            <input
+              placeholder="Address"
+              value={theaterForm.address}
+              onChange={(e) => setTheaterForm({ ...theaterForm, address: e.target.value })}
+            />
+            <button type="submit">{editingTheaterId ? "Update Theater" : "Add Theater"}</button>
+            {editingTheaterId && (
+              <button type="button" className="admin-cancel-btn" onClick={cancelEditingTheater}>
+                Cancel Edit
+              </button>
+            )}
+            <StatusMessage forKey="theater" />
+          </form>
 
-        <div className="admin-card admin-list-card">
-          <h2>Existing Theaters ({theaters.length})</h2>
-          <div className="admin-list">
-            {theaters.map((t) => (
-              <div className="admin-list-item" key={t._id}>
-                <span className="admin-list-title">{t.name}</span>
-                <span className="admin-list-meta">{t.city}</span>
-                <div className="admin-list-actions">
-                  <button type="button" onClick={() => startEditingTheater(t)}>
-                    Edit
-                  </button>
-                  <button type="button" className="danger" onClick={() => deleteTheater(t._id)}>
-                    Delete
-                  </button>
+          <div className="admin-card admin-list-card">
+            <h2>Existing Theaters ({theaters.length})</h2>
+            <div className="admin-list">
+              {theaters.map((t) => (
+                <div className="admin-list-item" key={t._id}>
+                  <span className="admin-list-title">{t.name}</span>
+                  <span className="admin-list-meta">{t.city}</span>
+                  <div className="admin-list-actions">
+                    <button type="button" onClick={() => startEditingTheater(t)}>
+                      Edit
+                    </button>
+                    <button type="button" className="danger" onClick={() => deleteTheater(t._id)}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-            {theaters.length === 0 && <p className="admin-hint">No theaters yet.</p>}
+              ))}
+              {theaters.length === 0 && <p className="admin-hint">No theaters yet.</p>}
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {activeTab === "screens" && (
-      <div className="admin-section-grid">
-        <form className="admin-card" onSubmit={handleScreenSubmit}>
-          <h2>{editingScreenId ? "Edit Screen" : "Add Screen"}</h2>
-          <select
-            value={screenForm.theater_id}
-            onChange={(e) => setScreenForm({ ...screenForm, theater_id: e.target.value })}
-            required
-          >
-            <option value="">Select theater…</option>
-            {theaters.map((t) => (
-              <option key={t._id} value={t._id}>
-                {t.name} ({t.city})
-              </option>
-            ))}
-          </select>
-          <input
-            placeholder="Screen name (e.g. Screen 2)"
-            value={screenForm.name}
-            onChange={(e) => setScreenForm({ ...screenForm, name: e.target.value })}
-            required
-          />
-          <label className="field-label">Screen Type</label>
-          <select
-            value={screenForm.screen_type}
-            onChange={(e) => setScreenForm({ ...screenForm, screen_type: e.target.value })}
-          >
-            {SCREEN_TYPE_OPTIONS.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-          {!editingScreenId && (
-            <div className="admin-row">
-              <input
-                type="number"
-                placeholder="Rows"
-                value={screenForm.rows}
-                onChange={(e) => setScreenForm({ ...screenForm, rows: e.target.value })}
-                min="1"
-              />
-              <input
-                type="number"
-                placeholder="Seats per row"
-                value={screenForm.seats_per_row}
-                onChange={(e) => setScreenForm({ ...screenForm, seats_per_row: e.target.value })}
-                min="1"
-              />
-            </div>
-          )}
-          <p className="admin-hint">
-            {editingScreenId
-              ? "Editing only updates the name/theater/type — seat layout stays as-is."
-              : "Seats are auto-generated. Last row = Recliner, next 2 = Premium."}
-          </p>
-          <button type="submit">{editingScreenId ? "Update Screen" : "Add Screen"}</button>
-          {editingScreenId && (
-            <button type="button" className="admin-cancel-btn" onClick={cancelEditingScreen}>
-              Cancel Edit
-            </button>
-          )}
-          <StatusMessage forKey="screen" />
-        </form>
-
-        <div className="admin-card admin-list-card">
-          <h2>Existing Screens ({screens.length})</h2>
-          <div className="admin-list">
-            {screens.map((s) => (
-              <div className="admin-list-item" key={s._id}>
-                <span className="admin-list-title">{s.name}</span>
-                <span className="admin-list-meta">
-                  {s.screen_type || "Standard"} · {s.total_seats} seats
-                </span>
-                <div className="admin-list-actions">
-                  <button type="button" onClick={() => startEditingScreen(s)}>
-                    Edit
-                  </button>
-                  <button type="button" className="danger" onClick={() => deleteScreen(s._id)}>
-                    Delete
-                  </button>
-                </div>
+        <div className="admin-section-grid">
+          <form className="admin-card" onSubmit={handleScreenSubmit}>
+            <h2>{editingScreenId ? "Edit Screen" : "Add Screen"}</h2>
+            <select
+              value={screenForm.theater_id}
+              onChange={(e) => setScreenForm({ ...screenForm, theater_id: e.target.value })}
+              required
+            >
+              <option value="">Select theater…</option>
+              {theaters.map((t) => (
+                <option key={t._id} value={t._id}>
+                  {t.name} ({t.city})
+                </option>
+              ))}
+            </select>
+            <input
+              placeholder="Screen name (e.g. Screen 2)"
+              value={screenForm.name}
+              onChange={(e) => setScreenForm({ ...screenForm, name: e.target.value })}
+              required
+            />
+            <label className="field-label">Screen Type</label>
+            <select
+              value={screenForm.screen_type}
+              onChange={(e) => setScreenForm({ ...screenForm, screen_type: e.target.value })}
+            >
+              {SCREEN_TYPE_OPTIONS.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+            {!editingScreenId && (
+              <div className="admin-row">
+                <input
+                  type="number"
+                  placeholder="Rows"
+                  value={screenForm.rows}
+                  onChange={(e) => setScreenForm({ ...screenForm, rows: e.target.value })}
+                  min="1"
+                />
+                <input
+                  type="number"
+                  placeholder="Seats per row"
+                  value={screenForm.seats_per_row}
+                  onChange={(e) => setScreenForm({ ...screenForm, seats_per_row: e.target.value })}
+                  min="1"
+                />
               </div>
-            ))}
-            {screens.length === 0 && <p className="admin-hint">No screens yet.</p>}
+            )}
+            <p className="admin-hint">
+              {editingScreenId
+                ? "Editing only updates the name/theater/type — seat layout stays as-is."
+                : "Seats are auto-generated. Last row = Recliner, next 2 = Premium."}
+            </p>
+            <button type="submit">{editingScreenId ? "Update Screen" : "Add Screen"}</button>
+            {editingScreenId && (
+              <button type="button" className="admin-cancel-btn" onClick={cancelEditingScreen}>
+                Cancel Edit
+              </button>
+            )}
+            <StatusMessage forKey="screen" />
+          </form>
+
+          <div className="admin-card admin-list-card">
+            <h2>Existing Screens ({screens.length})</h2>
+            <div className="admin-list">
+              {screens.map((s) => (
+                <div className="admin-list-item" key={s._id}>
+                  <span className="admin-list-title">{s.name}</span>
+                  <span className="admin-list-meta">
+                    {s.screen_type || "Standard"} · {s.total_seats} seats
+                  </span>
+                  <div className="admin-list-actions">
+                    <button type="button" onClick={() => startEditingScreen(s)}>
+                      Edit
+                    </button>
+                    <button type="button" className="danger" onClick={() => deleteScreen(s._id)}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {screens.length === 0 && <p className="admin-hint">No screens yet.</p>}
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {activeTab === "showtimes" && (
-      <div className="admin-section-grid">
-        <form className="admin-card" onSubmit={handleShowtimeSubmit}>
-          <h2>{editingShowtimeId ? "Edit Showtime" : "Add Showtime"}</h2>
-          <select
-            value={showtimeForm.movie_id}
-            onChange={(e) => setShowtimeForm({ ...showtimeForm, movie_id: e.target.value })}
-            required
-          >
-            <option value="">Select movie…</option>
-            {movies.map((m) => (
-              <option key={m._id} value={m._id}>
-                {m.title}
-              </option>
-            ))}
-          </select>
-          <select
-            value={showtimeForm.screen_id}
-            onChange={(e) => setShowtimeForm({ ...showtimeForm, screen_id: e.target.value })}
-            required
-          >
-            <option value="">Select screen…</option>
-            {screens.map((s) => (
-              <option key={s._id} value={s._id}>
-                {s.name} ({s.screen_type || "Standard"})
-              </option>
-            ))}
-          </select>
-          <input
-            type="datetime-local"
-            value={showtimeForm.start_time}
-            onChange={(e) => setShowtimeForm({ ...showtimeForm, start_time: e.target.value })}
-            required
-          />
-          <input
-          type="number"
-          placeholder="Base price (₹)"
-          value={showtimeForm.base_price}
-          onChange={(e) => setShowtimeForm({ ...showtimeForm, base_price: e.target.value })}
-          required
-        />
-        <select
-          value={showtimeForm.format}
-          onChange={(e) => setShowtimeForm({ ...showtimeForm, format: e.target.value })}
-        >
-          <option value="2D">2D</option>
-          <option value="3D">3D</option>
-        </select>
-        <button type="submit">{editingShowtimeId ? "Update Showtime" : "Add Showtime"}</button>
-                  
-          {editingShowtimeId && (
-            <button type="button" className="admin-cancel-btn" onClick={cancelEditingShowtime}>
-              Cancel Edit
-            </button>
-          )}
-          <StatusMessage forKey="showtime" />
-        </form>
+        <div className="admin-section-grid">
+          <form className="admin-card" onSubmit={handleShowtimeSubmit}>
+            <h2>{editingShowtimeId ? "Edit Showtime" : "Add Showtime"}</h2>
+            <select
+              value={showtimeForm.movie_id}
+              onChange={(e) => setShowtimeForm({ ...showtimeForm, movie_id: e.target.value })}
+              required
+            >
+              <option value="">Select movie…</option>
+              {movies.map((m) => (
+                <option key={m._id} value={m._id}>
+                  {m.title}
+                </option>
+              ))}
+            </select>
+            <select
+              value={showtimeForm.screen_id}
+              onChange={(e) => setShowtimeForm({ ...showtimeForm, screen_id: e.target.value })}
+              required
+            >
+              <option value="">Select screen…</option>
+              {screens.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.name} ({s.screen_type || "Standard"})
+                </option>
+              ))}
+            </select>
+            <input
+              type="datetime-local"
+              value={showtimeForm.start_time}
+              onChange={(e) => setShowtimeForm({ ...showtimeForm, start_time: e.target.value })}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Base price (₹)"
+              value={showtimeForm.base_price}
+              onChange={(e) => setShowtimeForm({ ...showtimeForm, base_price: e.target.value })}
+              required
+            />
+            <select
+              value={showtimeForm.format}
+              onChange={(e) => setShowtimeForm({ ...showtimeForm, format: e.target.value })}
+            >
+              <option value="2D">2D</option>
+              <option value="3D">3D</option>
+            </select>
+            <button type="submit">{editingShowtimeId ? "Update Showtime" : "Add Showtime"}</button>
+            {editingShowtimeId && (
+              <button type="button" className="admin-cancel-btn" onClick={cancelEditingShowtime}>
+                Cancel Edit
+              </button>
+            )}
+            <StatusMessage forKey="showtime" />
+          </form>
 
-        <div className="admin-card admin-list-card">
-          <h2>Existing Showtimes ({showtimes.length})</h2>
-          <p className="revenue-total">
-            Total revenue: <b>₹{revenue.total.revenue}</b> from {revenue.total.bookings} bookings (
-            {revenue.total.seats} seats)
-          </p>
-          <div className="admin-list">
-            {showtimes.map((s) => (
-              <div className="admin-list-item" key={s._id}>
-                <span className="admin-list-title">{s.movie_id?.title || "Unknown movie"}</span>
-                <span className="admin-list-meta">
-                  {s.screen_id?.name} ·{" "}
-                  {s.start_time &&
-                    new Date(s.start_time).toLocaleString([], {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })}
-                </span>
-                  {(() => {
-                  const r = revenue.byShowtime[s._id] || { revenue: 0, bookings: 0, seats: 0 };
-                  return (
-                    <span className="show-revenue">
-                      ₹{r.revenue} · {r.seats} seats · {r.bookings} bookings
-                    </span>
-                  );
-                })()}
-                <div className="admin-list-actions">
-                  <button type="button" onClick={() => startEditingShowtime(s)}>
-                    Edit
-                  </button>
-                  <button type="button" className="danger" onClick={() => deleteShowtime(s._id)}>
-                    Delete
-                  </button>
+          <div className="admin-card admin-list-card">
+            <h2>Existing Showtimes ({showtimes.length})</h2>
+            <div className="admin-list">
+              {showtimes.map((s) => (
+                <div className="admin-list-item" key={s._id}>
+                  <span className="admin-list-title">{s.movie_id?.title || "Unknown movie"}</span>
+                  <span className="admin-list-meta">
+                    {s.screen_id?.name} ·{" "}
+                    {s.start_time &&
+                      new Date(s.start_time).toLocaleString([], {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                      })}
+                  </span>
+                  <div className="admin-list-actions">
+                    <button type="button" onClick={() => startEditingShowtime(s)}>
+                      Edit
+                    </button>
+                    <button type="button" className="danger" onClick={() => deleteShowtime(s._id)}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-            {showtimes.length === 0 && <p className="admin-hint">No showtimes yet.</p>}
+              ))}
+              {showtimes.length === 0 && <p className="admin-hint">No showtimes yet.</p>}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {activeTab === "revenue" && (
+        <div className="admin-card revenue-card">
+          <h2>Revenue</h2>
+
+          <div className="revenue-summary">
+            <div className="stat-box">
+              <span className="stat-label">Total revenue</span>
+              <span className="stat-value">₹{revenue.total.revenue}</span>
+            </div>
+            <div className="stat-box">
+              <span className="stat-label">Bookings</span>
+              <span className="stat-value">{revenue.total.bookings}</span>
+            </div>
+            <div className="stat-box">
+              <span className="stat-label">Seats sold</span>
+              <span className="stat-value">{revenue.total.seats}</span>
+            </div>
+          </div>
+
+          <table className="revenue-table">
+            <thead>
+              <tr>
+                <th>Movie</th>
+                <th>Screen</th>
+                <th>Show time</th>
+                <th>Seats</th>
+                <th>Bookings</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...showtimes]
+                .sort((a, b) => new Date(b.start_time) - new Date(a.start_time))
+                .map((s) => {
+                  const r = revenue.byShowtime[s._id] || { revenue: 0, bookings: 0, seats: 0 };
+                  return (
+                    <tr key={s._id}>
+                      <td>{s.movie_id?.title || "Unknown movie"}</td>
+                      <td>{s.screen_id?.name}</td>
+                      <td>
+                        {s.start_time &&
+                          new Date(s.start_time).toLocaleString([], {
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })}
+                      </td>
+                      <td>{r.seats}</td>
+                      <td>{r.bookings}</td>
+                      <td className="rev-cell">₹{r.revenue}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+          {showtimes.length === 0 && <p className="admin-hint">No showtimes yet.</p>}
+        </div>
       )}
     </div>
   );
