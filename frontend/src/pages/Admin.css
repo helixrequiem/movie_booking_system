@@ -153,7 +153,18 @@
   accent-color: var(--gold);
   cursor: pointer;
 }
-
+.show-revenue {
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.revenue-total {
+  margin: 0 0 16px;
+  color: var(--text-dim);
+}
+.revenue-total b {
+  color: var(--gold);
+}
 .admin-row {
   display: flex;
   gap: 10px;

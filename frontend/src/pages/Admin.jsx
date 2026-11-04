@@ -13,7 +13,10 @@ function Admin() {
   const [screens, setScreens] = useState([]);
   const [movies, setMovies] = useState([]);
   const [showtimes, setShowtimes] = useState([]);
-
+  const [revenue, setRevenue] = useState({
+    byShowtime: {},
+    total: { revenue: 0, bookings: 0, seats: 0 },
+  });
   const emptyMovieForm = {
     title: "",
     description: "",
@@ -58,7 +61,16 @@ function Admin() {
     api.get("/movies").then((res) => setMovies(res.data));
     api.get("/showtimes").then((res) => setShowtimes(res.data));
   }
-
+    function refreshLists() {
+    api.get("/theaters").then((res) => setTheaters(res.data));
+    api.get("/screens").then((res) => setScreens(res.data));
+    api.get("/movies").then((res) => setMovies(res.data));
+    api.get("/showtimes").then((res) => setShowtimes(res.data));
+    api
+      .get("/bookings/admin/revenue")
+      .then((res) => setRevenue(res.data))
+      .catch(() => {});
+  }
   useEffect(refreshLists, []);
 
   async function submitForm(key, endpoint, payload, resetTo, method = "post") {
@@ -614,7 +626,7 @@ function Admin() {
             onChange={(e) => setShowtimeForm({ ...showtimeForm, start_time: e.target.value })}
             required
           />
-                  <input
+          <input
           type="number"
           placeholder="Base price (₹)"
           value={showtimeForm.base_price}
@@ -640,6 +652,10 @@ function Admin() {
 
         <div className="admin-card admin-list-card">
           <h2>Existing Showtimes ({showtimes.length})</h2>
+          <p className="revenue-total">
+            Total revenue: <b>₹{revenue.total.revenue}</b> from {revenue.total.bookings} bookings (
+            {revenue.total.seats} seats)
+          </p>
           <div className="admin-list">
             {showtimes.map((s) => (
               <div className="admin-list-item" key={s._id}>
@@ -652,6 +668,14 @@ function Admin() {
                       timeStyle: "short",
                     })}
                 </span>
+                  {(() => {
+                  const r = revenue.byShowtime[s._id] || { revenue: 0, bookings: 0, seats: 0 };
+                  return (
+                    <span className="show-revenue">
+                      ₹{r.revenue} · {r.seats} seats · {r.bookings} bookings
+                    </span>
+                  );
+                })()}
                 <div className="admin-list-actions">
                   <button type="button" onClick={() => startEditingShowtime(s)}>
                     Edit

@@ -9,6 +9,7 @@ const Seat = require("../models/seat");
 require("../models/movie");
 require("../models/screen");
 require("../models/theater");
+const requireAdmin = require("../middleware/requireAdmin");
 const requireAuth = require("../middleware/requireAuth");
 
 // GET /api/bookings/mine - all bookings for the logged-in user, most recent first
@@ -132,7 +133,53 @@ router.post("/", requireAuth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// GET /api/bookings/admin/revenue - revenue, bookings and seats sold per showtime (admin only)
+router.get("/admin/revenue", requireAuth, requireAdmin, async (req, res) => {
+  try {
+    // Revenue and booking count per showtime (cancelled bookings don't count)
+    const perShow = await Booking.aggregate([
+      { $match: { status: { $ne: "cancelled" } } },
+      {
+        $group: {
+          _id: "$showtime_id",
+          revenue: { $sum: "$total_amount" },
+          bookings: { $sum: 1 },
+        },
+      },
+    ]);
 
+    // Seats sold per showtime
+    const seatCounts = await BookingSeat.aggregate([
+      { $lookup: { from: "bookings", localField: "booking_id", foreignField: "_id", as: "b" } },
+      { $unwind: "$b" },
+      { $match: { "b.status": { $ne: "cancelled" } } },
+      { $group: { _id: "$b.showtime_id", seats: { $sum: 1 } } },
+    ]);
+
+    const byShowtime = {};
+    perShow.forEach((r) => {
+      byShowtime[r._id.toString()] = { revenue: r.revenue, bookings: r.bookings, seats: 0 };
+    });
+    seatCounts.forEach((r) => {
+      const key = r._id.toString();
+      if (!byShowtime[key]) byShowtime[key] = { revenue: 0, bookings: 0, seats: 0 };
+      byShowtime[key].seats = r.seats;
+    });
+
+    const total = Object.values(byShowtime).reduce(
+      (t, s) => ({
+        revenue: t.revenue + s.revenue,
+        bookings: t.bookings + s.bookings,
+        seats: t.seats + s.seats,
+      }),
+      { revenue: 0, bookings: 0, seats: 0 }
+    );
+
+    res.json({ byShowtime, total });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // GET /api/bookings/:id - booking confirmation details
 router.get("/:id", async (req, res) => {
   try {
